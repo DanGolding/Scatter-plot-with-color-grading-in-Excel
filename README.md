@@ -19,8 +19,8 @@ All the code is in [ChartColouring.bas](https://github.com/DanGolding/Scatter-pl
 1. Import [ChartColouring.bas](https://github.com/DanGolding/Scatter-plot-with-color-grading-in-Excel/blob/master/ChartColouring.bas) into your spreadsheet and save it as a .xlsm file.
 2. [Create a text file containing your colour map](https://github.com/DanGolding/Scatter-plot-with-color-grading-in-Excel/blob/master/README.md#creating-the-colour-map-file)
 3. [Run `MakeMap`](https://github.com/DanGolding/Scatter-plot-with-color-grading-in-Excel/blob/master/README.md#makemap) to create the colour map in your spreadsheet
-4. Run `colourChartSequential` or `colourChartDivergent` to colour your chart
-5. Create a colour bar by running `MakeColourBar` and then pasting the colour bar as a linked image.
+4. [Run `colourChartSequential` or `colourChartDivergent`](https://github.com/DanGolding/Scatter-plot-with-color-grading-in-Excel/blob/master/README.md#colourchartsequential-and-colourchartdivergent) to colour your chart
+5. [Create a colour bar](https://github.com/DanGolding/Scatter-plot-with-color-grading-in-Excel/blob/master/README.md#makecolourbar) by running `MakeColourBar` and then pasting the colour bar as a linked image.
 
 ### [Creating the colour map file](#creating-the-colour-map-file)
 
@@ -31,8 +31,23 @@ Color Scales with Chroma.js](https://www.vis4.net/blog/posts/mastering-multi-hue
 
 ### [MakeMap](#makemap)
 
-The next step is to get that colour map out of the text file and into your spread sheet. Run `MakeMap` to do this. You need to fill in a value for the variable `name` which is the name of the text file with your colour map in it. It will create a new sheet (named after your colour map text file) containing the hex values of your map in column A, the RGB values in columns B to D and a visualisation of the colour map in column F. The other `sub`s expect the colour map sheet in this format so I recommend you don't make any changes to it besides hiding the sheet. The resulting sheet looks like this:
+The next step is to get that colour map out of the text file and into your spread sheet. Run `MakeMap` to do this. You need to fill in a value for the variable `filename` which is the name of the text file with your colour map in it. It will create a new sheet (named after your colour map text file) containing the hex values of your map in column A, the RGB values in columns B to D and a visualisation of the colour map in column F. The other `sub`s expect the colour map sheet in this format so I recommend you don't make any changes to it besides hiding the sheet. The resulting sheet looks like this:
 
 <p align="center">
   <img src="/Images/Colour_map_example.png" />
 </p>
+
+### [`colourChartSequential` and `colourChartDivergent`](#colourchartsequential-and-colourchartdivergent)
+
+The next step is to use the colour map you created with `MakeMap` to colour a scatter chart. Use either `colourChartSequential` or `colourChartDivergent` for this. The colouring is based on dat that must be stored in a single column somewhere, and there should be nothing below the data in that column. There are 4 variables, all strings, you need to set in these `sub`s:
+
+ - `sheetData` - the name of the worksheet with your data. Note that by *data*, I mean the data that you are using to define the colouring of the chart. For example if you are plotting average daily temperature vs humidity, then *data* might be the column containing the dates.
+ - `dataStartCol` - The column letter where your data are.
+ - `dataStartRow` - The row numbe where your data start. So for example if your data are in a column with a header row, you might set this to `2`
+ - `chartName` - The name of the chart you want to colour. I recommend changing the name of the chart from the default names like `Chart 1`.
+ 
+The colouring has only been tested on charts with a single series, however it should be easy to adapt the code to account for a multi-series chart. Just change the line `With sheetData.ChartObjects(chartName).Chart.FullSeriesCollection(1)` and replace the `1` at the end to be the series relevant for your chart.
+
+Lastly, for some reason you sometimes need to ***run the colouring sub twice*** before the colours show.
+
+### [MakeColourBar](#makecolourbar)
