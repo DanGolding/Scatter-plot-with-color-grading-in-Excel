@@ -183,18 +183,18 @@ Sub MakeColourBar()
     Dim name As String
     ' sheetMap should be first created by running the MakeMap sub
     Dim sheetMap As Worksheet
-    Dim n_ticks As Integer
     name = "Colour Bar (Divergent)"
     Set sheetMap = Worksheets("Colour Map (Divergent)")
-    n_ticks = 8
     
     'Create a new sheet for the colour map
     Sheets.Add After:=ActiveSheet
     ActiveSheet.name = name
     
-    ' NB: Currently only supports n = 256
-    Dim n As Integer
+    ' NB: Currently only supports n = 256 and n_ticks = 8
+    Dim n As Integer ' The colour axis resolution i.e. the number of colour shown on the colour bar
+    Dim n_ticks As Integer ' The number of tick marks shows
     n = 256
+    n_ticks = 8
     
     ' Start, End and Step values for the colour bar tick marks
     Range("A" & n + 4).Value = "Start"
