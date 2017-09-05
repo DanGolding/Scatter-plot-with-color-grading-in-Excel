@@ -4,7 +4,7 @@ Option Explicit
 ' ================================================================================================================================
 ' This code was written by Dan Golding. You are free to use it and
 ' edit is as you like so long as you leave this attribution.
-' The latest version can be found here: https://github.com/DanGolding/Scatter-plot-with-color-grading-in-Excel/tree/master/Images
+' The latest version can be found here: https://github.com/DanGolding/Scatter-plot-with-color-grading-in-Excel
 ' ================================================================================================================================
 
 Sub FetchDataFromTextFile(filename As String, sheetname As String)
