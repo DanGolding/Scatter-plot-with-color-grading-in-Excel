@@ -1,6 +1,12 @@
 Attribute VB_Name = "ChartColouring"
 Option Explicit
 
+' ================================================================================================================================
+' This code was written by Dan Golding. You are free to use it and
+' edit is as you like so long as you leave this attribution.
+' The latest version can be found here: https://github.com/DanGolding/Scatter-plot-with-color-grading-in-Excel/tree/master/Images
+' ================================================================================================================================
+
 Sub FetchDataFromTextFile(filename As String, sheetname As String)
 'Read a text file containing a single line of space separated hex values and write them to column A of a worksheet
 'Based on https://stackoverflow.com/a/16668538/1011724
@@ -33,18 +39,18 @@ Sub MakeMap()
 ' in the same directory as the worksheet that contains a single line of space separated hex values of the form
 ' #000000
 
-    Dim name As String
+    Dim filename As String
     'Name of the text file (without the extension)
-    name = "Colour Map (Sequential)"
+    filename = "Colour Map (Sequential)"
 
     'Create a new sheet for the colour map
     Sheets.Add After:=ActiveSheet
-    ActiveSheet.name = name
+    ActiveSheet.name = filename
     Dim sheetMap As Worksheet
     Set sheetMap = Sheets(name)
     
     'Read the colour map from the text file and store it in column A
-    Call FetchDataFromTextFile(name & ".txt", name)
+    Call FetchDataFromTextFile(filename & ".txt", name)
     
     'Convert the hex numbers to RGB values
     Dim lastRow As Integer
@@ -61,60 +67,10 @@ Sub MakeMap()
     
 End Sub
 
-
 Function valueToMapPosition(datum As Variant, dataMin As Double, dataMax As Double, n As Integer) As Integer
 ' Normalise your data to fall in the range of the colour map for ease of lookup
     valueToMapPosition = CInt(((datum - dataMin) / (dataMax - dataMin)) * (n - 1)) + 1
 End Function
-
-Sub colourChartDivergent()
-' Colour a scatter chart according to divergent data (i.e. data that has a center such as 0. In fact, this
-' module currently assumes that the data is centered at 0. If this is not the case, alter the calculations
-' of dataMin and dataMax below)
-    
-    Dim sheetData As Worksheet
-    Dim dataStartCol As String
-    Dim dataStartRow As String
-    Dim chartName As String
-    'Change the following four parameters to match your needs
-    Set sheetData = Worksheets("Divergent")
-    dataStartCol = "D"
-    dataStartRow = "2"
-    chartName = "DivergentColour"
-
-    Dim sheetMap As Worksheet
-    Set sheetMap = Worksheets("Colour Map (Divergent)")
-    Dim n As Integer
-    n = sheetMap.Range("A1").End(xlDown).row
-    
-    Dim data As Variant
-    Dim dataMin As Double
-    Dim dataMax As Double
-    
-    Dim lastRow As Integer
-    lastRow = sheetData.Range(dataStartCol & dataStartRow).End(xlDown).row
-    data = sheetData.Range(dataStartCol & dataStartRow & ":" & dataStartCol & lastRow).Value2
-    dataMin = WorksheetFunction.Min(data)
-    dataMax = WorksheetFunction.Max(data)
-    
-    ' NB: This assumes the data is centered at 0, if it isn't then shift this min and max accordingly
-    dataMax = WorksheetFunction.Max(dataMax, -dataMin)
-    dataMin = -dataMax
-    
-    With sheetData.ChartObjects(chartName).Chart.FullSeriesCollection(1)
-    
-        Dim Count As Integer
-        Dim colourRow As Integer
-        Dim datum As Variant
-        For Count = 1 To UBound(data)
-            datum = data(Count, 1)
-            colourRow = valueToMapPosition(datum, dataMin, dataMax, n)
-            .Points(Count).Format.Fill.BackColor.RGB = RGB(sheetMap.Range("B" & colourRow).Value, sheetMap.Range("C" & colourRow).Value, sheetMap.Range("D" & colourRow).Value)
-        Next Count
-        
-    End With
-
-End Sub
 
 Sub colourChartSequential()
 
@@ -124,21 +80,24 @@ Sub colourChartSequential()
     Dim dataStartCol As String
     Dim dataStartRow As String
     Dim chartName As String
-    'Change the following four parameters to match your needs
+    ' Change the following four parameters to match your needs. The data according to which
+    ' you wish to colour your chart should be in a single column starting in the cell specified
+    ' by dataStartCol and dataStartRow
     Set sheetData = Worksheets("Divergent")
     dataStartCol = "A"
     dataStartRow = "2"
     chartName = "SequentialColour"
 
+    ' sheetMap should be created by first runnin the MakeMap sub
     Dim sheetMap As Worksheet
     Set sheetMap = Worksheets("Colour Map (Sequential)")
     Dim n As Integer
     n = sheetMap.Range("A1").End(xlDown).row
     
+    ' Read in the data and find its range
     Dim data As Variant
     Dim dataMin As Double
     Dim dataMax As Double
-    
     Dim lastRow As Integer
     lastRow = sheetData.Range(dataStartCol & dataStartRow).End(xlDown).row
     data = sheetData.Range(dataStartCol & dataStartRow & ":" & dataStartCol & lastRow).Value2
@@ -160,12 +119,69 @@ Sub colourChartSequential()
 
 End Sub
 
+Sub colourChartDivergent()
+' Colour a scatter chart according to divergent data (i.e. data that has a center such as 0. In fact, this
+' module currently assumes that the data is centered at 0. If this is not the case, alter the calculations
+' of dataMin and dataMax below)
+    
+    Dim sheetData As Worksheet
+    Dim dataStartCol As String
+    Dim dataStartRow As String
+    Dim chartName As String
+    ' Change the following four parameters to match your needs. The data according to which
+    ' you wish to colour your chart should be in a single column starting in the cell specified
+    ' by dataStartCol and dataStartRow
+    Set sheetData = Worksheets("Divergent")
+    dataStartCol = "D"
+    dataStartRow = "2"
+    chartName = "DivergentColour"
+    
+    ' sheetMap should be created by first runnin the MakeMap sub
+    Dim sheetMap As Worksheet
+    Set sheetMap = Worksheets("Colour Map (Divergent)")
+    Dim n As Integer
+    n = sheetMap.Range("A1").End(xlDown).row
+    
+    ' Read in the data and find its range, center the range at 0
+    Dim data As Variant
+    Dim dataMin As Double
+    Dim dataMax As Double
+    Dim lastRow As Integer
+    lastRow = sheetData.Range(dataStartCol & dataStartRow).End(xlDown).row
+    data = sheetData.Range(dataStartCol & dataStartRow & ":" & dataStartCol & lastRow).Value2
+    dataMin = WorksheetFunction.Min(data)
+    dataMax = WorksheetFunction.Max(data)
+    ' NB: This assumes the data is centered at 0, if it isn't then shift this min and max accordingly
+    dataMax = WorksheetFunction.Max(dataMax, -dataMin)
+    dataMin = -dataMax
+    
+    With sheetData.ChartObjects(chartName).Chart.FullSeriesCollection(1)
+    
+        Dim Count As Integer
+        Dim colourRow As Integer
+        Dim datum As Variant
+        For Count = 1 To UBound(data)
+            datum = data(Count, 1)
+            colourRow = valueToMapPosition(datum, dataMin, dataMax, n)
+            .Points(Count).Format.Fill.BackColor.RGB = RGB(sheetMap.Range("B" & colourRow).Value, sheetMap.Range("C" & colourRow).Value, sheetMap.Range("D" & colourRow).Value)
+        Next Count
+        
+    End With
+
+End Sub
+
 Sub MakeColourBar()
-    ' NB: You need to put the min (Start) and max (End) values on the sheet yourself manually
-    '     (using a formula if you want the colour bar to update dynamically)
+    ' Create a new sheet with the colour bar on it. To use it, copy cells A1:D258 and paste them as a linked
+    ' image. Resize the image keeping the aspect ratio constant and then resize the fontsize in column D
+    ' of the colour bar to visually match the size of you chart's axis labels.
+    ' NB: You need to put the min (Start) and max (End) values on the sheet yourself manually (using a
+    ' formula if you want the colour bar to update dynamically). Also note that if you resize anything in
+    ' the colour bar such as the volumn widths, you should create a new linked image otherwise the aspect
+    ' ratio may become distorted.
     
     'Enter the parameters below i.e. the name of the sheet with the colour map and the name of the new sheet with your colour bar
     Dim name As String
+    ' sheetMap should be first created by running the MakeMap sub
     Dim sheetMap As Worksheet
     Dim n_ticks As Integer
     name = "Colour Bar (Divergent)"
@@ -176,7 +192,7 @@ Sub MakeColourBar()
     Sheets.Add After:=ActiveSheet
     ActiveSheet.name = name
     
-    ' Currently only supports n = 256
+    ' NB: Currently only supports n = 256
     Dim n As Integer
     n = 256
     
@@ -186,7 +202,6 @@ Sub MakeColourBar()
     Range("A" & n + 6).Value = "Step"
     Range("D" & n + 6).FormulaR1C1 = "=(R[-1]C-R[-2]C)/" & n_ticks
 
-    'This assumes there are RGB colour data on another sheet. Change the sheet name and columns below as needed
     Dim row As Integer
     For row = 1 To n
         Range("B" & row + 1).Interior.Color = RGB(sheetMap.Range("B" & n - row + 1).Value, sheetMap.Range("C" & n - row + 1).Value, sheetMap.Range("D" & n - row + 1).Value)
