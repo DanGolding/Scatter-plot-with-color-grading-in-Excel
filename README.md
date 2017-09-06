@@ -14,7 +14,7 @@ Scatter plot without colouring              |  Scatter plot using a diveregent c
 
 
 
-All the code is in [ChartColouring.bas](https://github.com/DanGolding/Scatter-plot-with-color-grading-in-Excel/blob/master/ChartColouring.bas). An example spreadsheet is also provided for demonstration. There are 4  steps to colouring your charts:
+All the code is in [ChartColouring.bas](https://github.com/DanGolding/Scatter-plot-with-color-grading-in-Excel/blob/master/ChartColouring.bas). An example spreadsheet is also provided for demonstration. There are 5 steps to colouring your charts:
 
 1. Import [ChartColouring.bas](https://github.com/DanGolding/Scatter-plot-with-color-grading-in-Excel/blob/master/ChartColouring.bas) into your spreadsheet and save it as a .xlsm file.
 2. [Create a text file containing your colour map](https://github.com/DanGolding/Scatter-plot-with-color-grading-in-Excel/blob/master/README.md#creating-the-colour-map-file)
@@ -39,11 +39,11 @@ The next step is to get that colour map out of the text file and into your sprea
 
 ### [`colourChartSequential` and `colourChartDivergent`](#colourchartsequential-and-colourchartdivergent)
 
-The next step is to use the colour map you created with `MakeMap` to colour a scatter chart. Use either `colourChartSequential` or `colourChartDivergent` for this. The colouring is based on dat that must be stored in a single column somewhere, and there should be nothing below the data in that column. There are 4 variables, all strings, you need to set in these `sub`s:
+The next step is to use the colour map you created with `MakeMap` to colour a scatter chart. Use either `colourChartSequential` or `colourChartDivergent` for this. The colouring is based on data that must be stored in a single column somewhere, and there should be nothing below the data in that column. There are 4 variables, all strings, you need to set in these `sub`s:
 
  - `sheetData` - the name of the worksheet with your data. Note that by *data*, I mean the data that you are using to define the colouring of the chart. For example if you are plotting average daily temperature vs humidity, then *data* might be the column containing the dates.
  - `dataStartCol` - The column letter where your data are.
- - `dataStartRow` - The row numbe where your data start. So for example if your data are in a column with a header row, you might set this to `2`
+ - `dataStartRow` - The row number where your data start. So for example if your data are in a column with a header row, you might set this to `2`
  - `chartName` - The name of the chart you want to colour. I recommend changing the name of the chart from the default names like `Chart 1`.
  
 The colouring has only been tested on charts with a single series, however it should be easy to adapt the code to account for a multi-series chart. Just change the line `With sheetData.ChartObjects(chartName).Chart.FullSeriesCollection(1)` and replace the `1` at the end to be the series relevant for your chart.
@@ -52,7 +52,7 @@ Lastly, for some reason you sometimes need to ***run the colouring sub twice*** 
 
 ### [MakeColourBar](#makecolourbar)
 
-The last step is to create the colour bar. This is done by resizing and colouring cells in a worksheet and then merging cells to create the tick marks and the tick labels. The `MakeColourBar` subroutine automatically does all this for you. You just need to specify the name of the new worksheet to create the colour bar in as `name` and the name of the sheet with the colour map (created by `MakeMap`) in as `sheetMap`. If you are interested in what this cde is doing, I recommend turning the gridlines back on to get a good visual understanding of which cells are merged and why (i.e. to create the tick marks and the tick mark labels) while simultaneously going through the code.
+The last step is to create the colour bar. This is done by resizing and colouring cells in a worksheet and then merging cells to create the tick marks and the tick labels. The `MakeColourBar` subroutine automatically does all this for you. You just need to specify the name of the new worksheet to create the colour bar in as `name` and the name of the sheet with the colour map (created by `MakeMap`) in as `sheetMap`. If you are interested in what this code is doing, I recommend turning the gridlines back on to get a good visual understanding of which cells are merged and why (i.e. to create the tick marks and the tick mark labels) while simultaneously going through the code.
 
 You then need to fill in the minimum and maximum values for your colour bar in cells `D260` and `D261`. You could use a formula over your *data* range such as `=MIN(...)` for this or hardcode a value. Then copy cells `A1:D258`, navigate to the sheet with your chart on it and paste-special as a *linked image*:
 
@@ -60,4 +60,4 @@ You then need to fill in the minimum and maximum values for your colour bar in c
   <img src="/Images/paste_linked_image.png" />
 </p>
 
-Resize the pasted colour bar making sure to keep the aspect ratio constant and position it next to your chart. I like to reduce the size of the *plot area* to make space for the colour bar on the right hand side inside the *chart area*. The tick labels typeface will probably now be to small but because it is a linked image you can just go to the sheet with your colour bar and change the typeface size there iteratively until the tick labels match your charts axis labels in size (~20 is a good starting point). You can do any formatting to the tick mark labels at this point by just using the regular formatting options for cell in Excel. You can also add extra text labels using a textbox, this is how I add the *(Brexit)* label in the example image at the beginning of this document. Note that the resizing / formatting might mess up the aspect ratio of the image so I recommend deleting it and repasting and resizing it.
+Resize the pasted colour bar making sure to keep the aspect ratio constant and position it next to your chart. I like to reduce the size of the *plot area* to make space for the colour bar on the right hand side inside the *chart area*. The tick labels typeface will probably now be too small but because it is a linked image you can just go to the sheet with your colour bar and change the typeface size there iteratively until the tick labels match your charts axis labels in size (~20 is a good starting point). You can do any formatting to the tick mark labels at this point by just using the regular formatting options for cells in Excel. You can also add extra text labels using a textbox, this is how I add the *(Brexit)* label in the example image at the beginning of this document. Note that the resizing / formatting might mess up the aspect ratio of the image so I recommend deleting it and repasting and resizing it.
