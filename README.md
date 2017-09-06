@@ -51,3 +51,13 @@ The colouring has only been tested on charts with a single series, however it sh
 Lastly, for some reason you sometimes need to ***run the colouring sub twice*** before the colours show.
 
 ### [MakeColourBar](#makecolourbar)
+
+The last step is to create the colour bar. This is done by resizing and colouring cells in a worksheet and then merging cells to create the tick marks and the tick labels. The `MakeColourBar` subroutine automatically does all this for you. You just need to specify the name of the new worksheet to create the colour bar in as `name` and the name of the sheet with the colour map (created by `MakeMap`) in as `sheetMap`. If you are interested in what this cde is doing, I recommend turning the gridlines back on to get a good visual understanding of which cells are merged and why (i.e. to create the tick marks and the tick mark labels) while simultaneously going through the code.
+
+You then need to fill in the minimum and maximum values for your colour bar in cells `D260` and `D261`. You could use a formula over your *data* range such as `=MIN(...)` for this or hardcode a value. Then copy cells `A1:D258`, navigate to the sheet with your chart on it and paste-special as a *linked image*:
+
+<p align="center">
+  <img src="/Images/paste_linked_image.png" />
+</p>
+
+Resize the pasted colour bar making sure to keep the aspect ratio constant and position it next to your chart. I like to reduce the size of the *plot area* to make space for the colour bar on the right hand side inside the *chart area*. The tick labels typeface will probably now be to small but because it is a linked image you can just go to the sheet with your colour bar and change the typeface size there iteratively until the tick labels match your charts axis labels in size (~20 is a good starting point). You can do any formatting to the tick mark labels at this point by just using the regular formatting options for cell in Excel. You can also add extra text labels using a textbox, this is how I add the *(Brexit)* label in the example image at the beginning of this document. Note that the resizing / formatting might mess up the aspect ratio of the image so I recommend deleting it and repasting and resizing it.
