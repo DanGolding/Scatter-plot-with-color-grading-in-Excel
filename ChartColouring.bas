@@ -40,8 +40,21 @@ Sub MakeMap()
 ' #000000
 
     Dim filename As String
+    Dim directory As String
+    Dim fullFilename As String
+    Dim cmapname As String
+
     'Name of the text file (without the extension)
     filename = "Colour Map (Sequential)"
+    
+    'the full path of the folder where the text file lives
+    directory = "C:\Users\Bloggs\My Documents\" '< EDIT THIS
+    
+    'check directory ends in a backslash
+    If Right(directory, 1) <> "\" Then directory = directory & "\"
+    fullFilename = directory & filename & ".txt"
+    
+    If Dir(fullFilename) = "" Then MsgBox "Could not find the text file. Check the file name matches the name in the code"
 
     'Create a new sheet for the colour map
     Sheets.Add After:=ActiveSheet
@@ -50,7 +63,7 @@ Sub MakeMap()
     Set sheetMap = Sheets(name)
     
     'Read the colour map from the text file and store it in column A
-    Call FetchDataFromTextFile(filename & ".txt", name)
+    Call FetchDataFromTextFile(fullFilename & ".txt", name)
     
     'Convert the hex numbers to RGB values
     Dim lastRow As Integer
