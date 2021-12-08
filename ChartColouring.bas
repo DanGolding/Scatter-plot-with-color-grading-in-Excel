@@ -7,7 +7,7 @@ Option Explicit
 ' The latest version can be found here: https://github.com/DanGolding/Scatter-plot-with-color-grading-in-Excel
 ' ================================================================================================================================
 
-Sub FetchDataFromTextFile(filename As String, sheetname As String)
+Sub FetchDataFromTextFile(filename As String, sheetMap As Worksheet)
 'Read a text file containing a single line of space separated hex values and write them to column A of a worksheet
 'Based on https://stackoverflow.com/a/16668538/1011724
     Dim line As Long
@@ -26,7 +26,7 @@ Sub FetchDataFromTextFile(filename As String, sheetname As String)
                 Dim arr
                 arr = Split(CStr(LineText), " ")
                 For element = 1 To UBound(arr) + 1
-                    Sheets(sheetname).Cells(element, row).Value = arr(element - 1)
+                    sheetMap.Cells(element, row).Value = arr(element - 1)
                 Next element
                 line = line + 1
         End If
@@ -47,10 +47,10 @@ Sub MakeMap()
     Sheets.Add After:=ActiveSheet
     ActiveSheet.name = filename
     Dim sheetMap As Worksheet
-    Set sheetMap = Sheets(name)
+    Set sheetMap = ActiveSheet
     
     'Read the colour map from the text file and store it in column A
-    Call FetchDataFromTextFile(filename & ".txt", name)
+    Call FetchDataFromTextFile(filename & ".txt", sheetMap)
     
     'Convert the hex numbers to RGB values
     Dim lastRow As Integer
